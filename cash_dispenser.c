@@ -12,13 +12,13 @@ void depositar ( int valores[], int quantidade[], int totalPNota[], int saldo){
     if (nota==10) {
         quantidade[0]=quantNota;
     }
-    if (nota==20) {
+    else if (nota==20) {
         quantidade[1]=quantNota;
     }
-    if (nota==50) {
+    else if (nota==50) {
         quantidade[2]=quantNota;
     }
-    if (nota==100){
+    else if (nota==100){
         quantidade[3]=quantNota;
     }
 
@@ -37,11 +37,26 @@ void depositar ( int valores[], int quantidade[], int totalPNota[], int saldo){
 }
 
 void saque (int valores[], int quantidade[], int totalPNota[], int saldo){
+    int verificaValor[4]={0};
     int valor;
+    int algumaNDisponivel = 0;
 
-    printf("Qual valor deseja sacar: ");
+    printf("As seguintes notas estão disponíveis: \n");
+    for (int i=0; i<4; i++)
+        if (quantidade[i] > 0) {
+            printf("- %d  reais - ", valores[i]);
+            algumaNDisponivel = 1;
+        }
+   
+    if (algumaNDisponivel == 0) {
+        printf("Nenhum valor disponivel para saque. \n");
+    } 
+    // Se tem notas disponiveis existe a possibilidade de saque
+    else if (algumaNDisponivel == 1){
+    printf("\n Informe o valor de Saque : ");
     scanf("%d", &valor);
-
+    }
+        
 }
 
 int main()
