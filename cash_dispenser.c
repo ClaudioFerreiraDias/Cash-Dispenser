@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
-
-void depositar ( int valores[], int quantidade[], int totalPNota[], int saldo){  
+// FUNÇÃO DE DESPOSITAR
+void depositar ( int quantidade[]){  
     int nota, quantNota;
 
     printf("Informe o valor de depósito (10, 20, 50, 100): ");
@@ -10,35 +10,30 @@ void depositar ( int valores[], int quantidade[], int totalPNota[], int saldo){
     scanf("%d", &quantNota);
   
     if (nota==10) {
-        quantidade[0]=quantNota;
+        quantidade[0]+=quantNota;
     }
     else if (nota==20) {
-        quantidade[1]=quantNota;
+        quantidade[1]+=quantNota;
     }
     else if (nota==50) {
-        quantidade[2]=quantNota;
+        quantidade[2]+=quantNota;
     }
     else if (nota==100){
-        quantidade[3]=quantNota;
+        quantidade[3]+=quantNota;
     }
 
    else {
     printf("ERRO! Valor não aceito, tente novamente \n");
    }
-   
-   //atualização de saldo
-   for(int i=0; i<4; i++)
-      totalPNota[i] = valores[i]*quantidade[i];
-    
-    for (int i=0; i<4; i++)
-     saldo = saldo + totalPNota[i];
 
-     printf ("Seu saldo atual é: %d reais \n", saldo);
 }
 
-void saque (int valores[], int quantidade[], int totalPNota[], int saldo){
+// FUNÇÃO DE SAQUE
+void saque (int valores[], int quantidade[]){
     int verificaValor[4]={0};
+    int retiraValor [4]= {0};
     int valor;
+    int valorRestante;
     int algumaNDisponivel = 0;
 
     printf("As seguintes notas estão disponíveis: \n");
@@ -55,39 +50,76 @@ void saque (int valores[], int quantidade[], int totalPNota[], int saldo){
     else if (algumaNDisponivel == 1){
     printf("\n Informe o valor de Saque : ");
     scanf("%d", &valor);
+    valorRestante = valor;
     }
-        
+
+    // operção de saque
+    for (int i=3; i>=0; i--)
+        if (quantidade[i] > 0) {
+            verificaValor[i] = valorRestante/valores[i];
+            if (verificaValor[i]>=quantidade[i]) {
+                retiraValor[i] = quantidade[i]*valores[i];
+                quantidade[i] = 0;
+                valorRestante = valorRestante - retiraValor[i];
+            }
+            else if (verificaValor[i]<quantidade[i]){
+                quantidade[i] = quantidade[i]-verificaValor[i];
+                retiraValor[i] = verificaValor[i]*valores[i];
+                valorRestante = valorRestante- retiraValor[i];
+            }
+        }
+    
+    if (valorRestante ==0){
+        printf("Operação Realizada");
+    } else {
+        printf("Notas insuficiente, operação não realizada");
+    }
 }
 
+// TELA PRINCIPAL
 int main()
 {
   int valores[4]={10, 20, 50, 100};
   int quantidade[4]={0};
   int totalPNota[4];
-  int saldo=0;
-  char operacao[8];
+  int saldo = 0;
+  int operacao;
   
   printf("CASH DISPENSER\n");
   printf("Seu saldo atual é: %d \n", saldo);
   //Seleção de tipo de operação
   do {
-    printf("Qual operação deseja executar (Deposito, Saque, Sair): \n");
-    scanf("%s", operacao);
+    printf("\n Qual operação deseja executar digite: \n 1 - Deposito. \n 2 - Saque.\n 3 - verificar saldo. \n 4 - Sair.): \n");
+    scanf("%d", &operacao);
 
-    if (strcmp(operacao,"Deposito") == 0) {
-        depositar(valores, quantidade, totalPNota, saldo );
+    if (operacao==1) {
+        depositar(quantidade);
     }
 
-    if (strcmp(operacao,"Saque") ==0){
-        saque(valores, quantidade, totalPNota, saldo);
+    else if (operacao ==2) {
+        saque(valores, quantidade);
     }
 
-    if (strcmp(operacao,"Sair")==0){
+    else if (operacao ==3) {
+        saldo = 0;
+        for(int i=0; i<4; i++){
+                totalPNota[i] = valores[i]*quantidade[i];
+            }
+            
+            for (int i=0; i<4; i++){
+                saldo = saldo + totalPNota[i];
+            }
+
+        printf ("Seu saldo atual é: %d reais \n", saldo);
+
+    }
+
+    else  if (operacao ==4){
         printf("Finalizando operação");
         return 0;
     }
 
-  } while (strcmp(operacao,"Sair") !=0);
+  } while (operacao!=4);
 
   return 0;
 }
